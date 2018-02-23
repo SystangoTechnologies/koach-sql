@@ -1,7 +1,7 @@
 ![KOACH](https://github.com/SystangoTechnologies/Koach/blob/master/static/koach.png)
 
 ## KOACH
-Production ready boilerplate for building APIs with [koa2](https://github.com/koajs/koa/) using SQL the database and http/2 as the communication protocol.
+Production ready boilerplate for building APIs with [koa2](https://github.com/koajs/koa/), sequelize and http/2 as the communication protocol.
 
 ## Description
 This project covers basic necessities of most APIs.
@@ -89,7 +89,7 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 * `npm test` Run mocha tests
 
 ## Database
-# And one of the following databases with Sequelize:
+##### And one of the following databases with Sequelize:
 * npm install --save pg pg-hstore
 * npm install --save mysql2
 * npm install --save sqlite3
