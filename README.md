@@ -70,7 +70,7 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 │   │    │   ├─ Auth
 │   │    │   ├─ User   
 │   │    │   └─ index.js            
-│   │    └─── v2                     # Version 2 of APIs
+│   │    └─── v2                    # Version 2 of APIs
 │   │         ├─ Auth
 │   │         ├─ User   
 │   │         └─ index.js
