@@ -66,11 +66,11 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 │   │    ├── common                 # Contains common modules
 │   │    │   ├─── home              
 │   │    │   └─ index.js
-│   │    ├── v1                     # Version v1 of APIs
+│   │    ├── v1                     # Version 1 of APIs
 │   │    │   ├─ Auth
 │   │    │   ├─ User   
 │   │    │   └─ index.js            
-│   │    └─── v2                     # Version v2 of APIs
+│   │    └─── v2                     # Version 2 of APIs
 │   │         ├─ Auth
 │   │         ├─ User   
 │   │         └─ index.js
