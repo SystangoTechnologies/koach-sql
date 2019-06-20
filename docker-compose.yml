@@ -1,0 +1,19 @@
+version: '2.1'
+services:      
+  web:
+    build: .
+    container_name: koach-sql
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - TOKEN=${TOKEN}
+      - SESSION=${SESSION}
+      - DATABASE=${DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_DBPORT=${DB_DBPORT}
+      - DB_DIALECT=${DB_DIALECT}

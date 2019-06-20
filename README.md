@@ -18,7 +18,7 @@ Please note, if you are planning to use this boilerplate for creating a web appl
 Visit `https://localhost:3000/` to access the root page.
 
 ## Requirements
-* node > v8.9.4
+* node = v10.15.3
 * SQL Database
 
 ## Installation
@@ -42,7 +42,6 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 * [apidoc](http://apidocjs.com/)
 * [Babel](https://github.com/babel/babel)
 * [ESLint](http://eslint.org/)
-* [Gulp](https://github.com/gulpjs/gulp/)
 * [PM2](https://github.com/Unitech/pm2/)
 * [Swagger](https://github.com/swagger-api/)
 
@@ -80,13 +79,27 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 │   └── middleware                  # Custom middleware
 │       └── validators              # Validation middleware
 └── test                            # Unit tests
+└── pm2.config.js                   # PM2 configuration file
+└── Dockerfile                      # Docker file
+└── docker-compose.yml              # Docker Compose file
+
 ```
 
 ## Usage
-* `gulp prod` Start server on production mode with PM2
-* `gulp` Start server on development mode with nodemon
+* `npm start` Start server on development mode with Nodemon
+* `npm run prod` Start server on production mode with PM2
 * `npm run docs` Generate API documentation
 * `npm test` Run mocha tests
+
+## Running the server in Docker Container
+
+Prerequisite For Docker Configuration : Docker and docker compose must be installed on the system.
+
+Steps to run app in docker container :
+  1. CD to project dir
+  2. Create build using cmd: $ docker-compose build
+  3. Start the server in daemon thread using cmd: $ docker-compose up -d  
+  4. Stop the server using cmd : $ docker-compose down
 
 ## Database
 ##### And one of the following databases with Sequelize:
@@ -96,6 +109,8 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 * npm install --save tedious
 
 ## Environment Variables
+* NODE_ENV
+* PORT
 * SESSION
 * TOKEN
 * DATABASE
@@ -127,6 +142,7 @@ The environment for the test caes are following-
 ## Contributors
 [Arpit Khandelwal](https://github.com/arpit-systango)
 [Anurag Vikram Singh](https://www.linkedin.com/in/anuragvikramsingh/)
+[Vikas Patidar](https://www.linkedin.com/in/vikas-patidar-0106/)
 
 ## License
 MIT.

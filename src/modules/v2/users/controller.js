@@ -1,4 +1,5 @@
 import db from '../../../models/index'
+import constants from './../../../utils/constants'
 
 /**
  * @api {get} /users Get all users
@@ -28,9 +29,15 @@ import db from '../../../models/index'
  * @apiUse TokenError
  */
 export async function getUsers (ctx) {
-  // Get all the users
-  const users = await db.user.findAll({
-    attributes: { exclude: ['password'] }
-  })
-  ctx.body = { users }
+	// Get all the users
+	try {
+		const users = await db.user.findAll({
+			attributes: { exclude: ['password'] }
+		})
+		ctx.body = { users }
+		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
+	} catch (error) {
+		ctx.body = error.message;
+		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
+	}
 }

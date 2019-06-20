@@ -1,4 +1,5 @@
 import db from '../../../models/index'
+import constants from './../../../utils/constants'
 
 /**
  * @api {post} /v1/users Create a new user
@@ -20,7 +21,7 @@ import db from '../../../models/index'
  * @apiSuccess {String}   users.username  User username
  *
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
+ *     HTTP/1.1 201 OK
  *     {
  *       "user": {
  *          "_id": "56bd1da600a526986cf65c80"
@@ -32,35 +33,46 @@ import db from '../../../models/index'
  * @apiError UnprocessableEntity Missing required parameters
  *
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 422 Unprocessable Entity
+ *     HTTP/1.1 500 Internal Server Error
  *     {
- *       "status": 422,
- *       "error": "Unprocessable Entity"
+ *       "status": 500,
+ *       "error": "Internal Server Error"
  *     }
  */
 export async function createUser (ctx) {
-  // Create user
-  let createdUser
-  try {
-    createdUser = await db.user.create({
-      name: ctx.request.body.user.name,
-      username: ctx.request.body.user.username,
-      password: ctx.request.body.user.password
-    })
-  } catch (err) {
-    ctx.throw(422, err.message)
-  }
-
-  // Generated token is used for authentication
-  const token = createdUser.generateToken()
-  const response = createdUser.toJSON()
-
-  delete response.password
-
-  ctx.body = {
-    user: response,
-    token
-  }
+	// Create user
+	let createdUser
+	try {
+		const user = await db.user.findOne({
+			where: {
+				username: ctx.request.body.user.username
+			},
+			attributes: { exclude: ['password'] }
+		})
+		if(user) {
+			ctx.body = constants.MESSAGES.USER_ALREADY_EXIST;
+			ctx.status = constants.STATUS_CODE.CONFLICT_ERROR_STATUS
+			return
+		}
+		createdUser = await db.user.create({
+			name: ctx.request.body.user.name,
+			username: ctx.request.body.user.username,
+			password: ctx.request.body.user.password
+		})
+		// Generated token is used for authentication
+		const token = createdUser.generateToken()
+		const response = createdUser.toJSON()
+		delete response.password
+		ctx.body = {
+			user: response
+		}
+		ctx.append('Authorization', token);
+		ctx.status = constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS;
+	} catch (error) {
+		console.log('Error while creating user ', error);
+		ctx.body = error.message;
+		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
+	}
 }
 
 /**
@@ -91,11 +103,17 @@ export async function createUser (ctx) {
  * @apiUse TokenError
  */
 export async function getUsers (ctx) {
-  // Get all the users
-  const users = await db.user.findAll({
-    attributes: { exclude: ['password'] }
-  })
-  ctx.body = { users }
+	// Get all the users
+	try {
+		const users = await db.user.findAll({
+			attributes: { exclude: ['password'] }
+		})
+		ctx.body = { users }
+		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
+	} catch (error) {
+		ctx.body = error.message;
+		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
+	}
 }
 
 /**
@@ -125,28 +143,29 @@ export async function getUsers (ctx) {
  *
  * @apiUse TokenError
  */
-export async function getUser (ctx, next) {
-  // Find user by id
-  try {
-    const user = await db.user.findOne({
-      where: {
-        id: ctx.params.id
-      },
-      attributes: { exclude: ['password'] }
-    })
-
-    // If user was not found
-    if (!user) { ctx.throw(404) }
-    ctx.body = { user }
-  } catch (err) {
-    // catch  NotFoundError OR CastError error
-    if (err === 404 || err.name === 'CastError' || err.name === 'NotFoundError') {
-      ctx.throw(404)
-    }
-    ctx.throw(500)
-  }
-
-  if (next) { return next() }
+export async function getUser (ctx) {
+	// Find user by id
+	try {
+		const user = await db.user.findOne({
+			where: {
+				id: ctx.params.id
+			},
+			attributes: { exclude: ['password'] }
+		})
+		// If user was not found
+		if (!user) {
+			ctx.status = constants.STATUS_CODE.NO_CONTENT_STATUS
+			ctx.body = {
+				message: constants.MESSAGES.USER_NOT_FOUND
+			}
+			return
+		}
+		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
+		ctx.body = { user }
+	} catch (error) {
+		ctx.body = error.message;
+		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
+	}
 }
 
 /**
@@ -161,7 +180,6 @@ export async function getUser (ctx, next) {
  *
  * @apiParam {Object} user          User object (required)
  * @apiParam {String} user.name     Name.
- * @apiParam {String} user.username Username.
  *
  * @apiSuccess {Object}   users           User object
  * @apiSuccess {ObjectId} users._id       User id
@@ -181,41 +199,41 @@ export async function getUser (ctx, next) {
  * @apiError UnprocessableEntity Missing required parameters
  *
  * @apiErrorExample {json} Error-Response:
- *     HTTP/1.1 422 Unprocessable Entity
+ *     HTTP/1.1 500 Internal Server Error
  *     {
- *       "status": 422,
- *       "error": "Unprocessable Entity"
+ *       "status": 500,
+ *       "error": "Internal Server Error"
  *     }
  *
  * @apiUse TokenError
  */
 export async function updateUser (ctx) {
-  // update user
-  let updateUser
-  try {
-    await db.user.update({
-      name: ctx.request.body.user.name,
-      username: ctx.request.body.user.username,
-      password: ctx.request.body.user.password }, {
-        where: {
-          id: ctx.params.id
-        }
-      })
-  } catch (err) {
-    ctx.throw(422, err.message)
-  }
-
-  // Get the updated user from the database
-  updateUser = await db.user.findOne({
-    where: {
-      id: ctx.params.id
-    },
-    attributes: { exclude: ['password'] }
-  })
-
-  ctx.body = {
-    updateUser
-  }
+	// update user
+	let updateUser
+	try {
+		await db.user.update({
+			name: ctx.request.body.user.name
+		},
+		{
+			where: {
+				id: ctx.params.id
+			}
+		})
+		// Get the updated user from the database
+		updateUser = await db.user.findOne({
+			where: {
+				id: ctx.params.id
+			},
+			attributes: { exclude: ['password'] }
+		})
+		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
+		ctx.body = {
+			updateUser
+		}
+	} catch (error) {
+		ctx.body = error.message;
+		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
+	}
 }
 
 /**
@@ -240,18 +258,16 @@ export async function updateUser (ctx) {
  */
 
 export async function deleteUser (ctx) {
-  // Find and delete record using id
-  try {
-    await db.user.destroy({
-      where: { id: ctx.params.id }
-    })
-  } catch (err) {
-    ctx.throw(422, err.message)
-  }
-
-  ctx.status = 200
-
-  ctx.body = {
-    success: true
-  }
+	// Find and delete record using id
+	try {
+		await db.user.destroy({
+			where: { id: ctx.params.id }
+		})
+		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
+		ctx.body = {
+			success: true
+		}
+	} catch (err) {
+		ctx.throw(422, err.message)
+	}
 }
