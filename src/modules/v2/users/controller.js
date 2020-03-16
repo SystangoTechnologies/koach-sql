@@ -34,7 +34,7 @@ export async function getUsers (ctx) {
 		const users = await db.user.findAll({
 			attributes: { exclude: ['password'] }
 		})
-		ctx.body = { users }
+		ctx.body = users
 		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
 	} catch (error) {
 		ctx.body = error.message;

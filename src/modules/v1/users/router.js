@@ -1,5 +1,9 @@
+'use-strict'
+
 import { ensureUser } from '../../../middleware/validators'
 import * as user from './controller'
+import { validation } from 'swagger-generator-koa'
+import requestModel from '../../../requestModel/v1/users';
 
 export const baseUrl = '/users'
 
@@ -8,6 +12,7 @@ export default [
 		method: 'POST',
 		route: '/',
 		handlers: [
+			validation(requestModel[0]),
 			user.createUser
 		]
 	},
@@ -24,6 +29,7 @@ export default [
 		route: '/:id',
 		handlers: [
 			ensureUser,
+			validation(requestModel[2]),
 			user.getUser
 		]
 	},
@@ -32,6 +38,7 @@ export default [
 		route: '/:id',
 		handlers: [
 			ensureUser,
+			validation(requestModel[3]),
 			user.updateUser
 		]
 	},
@@ -40,6 +47,7 @@ export default [
 		route: '/:id',
 		handlers: [
 			ensureUser,
+			validation(requestModel[4]),
 			user.deleteUser
 		]
 	}

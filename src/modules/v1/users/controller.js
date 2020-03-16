@@ -43,9 +43,10 @@ export async function createUser (ctx) {
 	// Create user
 	let createdUser
 	try {
+		const body = ctx.request.body;
 		const user = await db.user.findOne({
 			where: {
-				username: ctx.request.body.user.username
+				username: body.username
 			},
 			attributes: { exclude: ['password'] }
 		})
@@ -55,17 +56,15 @@ export async function createUser (ctx) {
 			return
 		}
 		createdUser = await db.user.create({
-			name: ctx.request.body.user.name,
-			username: ctx.request.body.user.username,
-			password: ctx.request.body.user.password
+			name: body.name,
+			username: body.username,
+			password: body.password
 		})
 		// Generated token is used for authentication
 		const token = createdUser.generateToken()
 		const response = createdUser.toJSON()
 		delete response.password
-		ctx.body = {
-			user: response
-		}
+		ctx.body = response
 		ctx.append('Authorization', token);
 		ctx.status = constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS;
 	} catch (error) {
@@ -108,7 +107,7 @@ export async function getUsers (ctx) {
 		const users = await db.user.findAll({
 			attributes: { exclude: ['password'] }
 		})
-		ctx.body = { users }
+		ctx.body = users
 		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
 	} catch (error) {
 		ctx.body = error.message;
@@ -161,7 +160,7 @@ export async function getUser (ctx) {
 			return
 		}
 		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
-		ctx.body = { user }
+		ctx.body = user
 	} catch (error) {
 		ctx.body = error.message;
 		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS
@@ -212,7 +211,7 @@ export async function updateUser (ctx) {
 	let updateUser
 	try {
 		await db.user.update({
-			name: ctx.request.body.user.name
+			name: ctx.request.body.name
 		},
 		{
 			where: {
@@ -227,9 +226,7 @@ export async function updateUser (ctx) {
 			attributes: { exclude: ['password'] }
 		})
 		ctx.status = constants.STATUS_CODE.SUCCESS_STATUS;
-		ctx.body = {
-			updateUser
-		}
+		ctx.body = updateUser
 	} catch (error) {
 		ctx.body = error.message;
 		ctx.status = constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS

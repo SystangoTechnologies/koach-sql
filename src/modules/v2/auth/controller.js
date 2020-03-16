@@ -62,9 +62,7 @@ export async function authUser (ctx, next) {
 			const response = user.toJSON()
 			delete response.password
 			ctx.status = constants.STATUS_CODE.SUCCESS_STATUS
-			ctx.body = {
-				user: response
-			}
+			ctx.body = response
 			ctx.append('Authorization', token);
 		})(ctx, next)
 	} catch (error) {
