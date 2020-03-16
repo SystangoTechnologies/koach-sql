@@ -43,7 +43,7 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 * [Babel](https://github.com/babel/babel)
 * [ESLint](http://eslint.org/)
 * [PM2](https://github.com/Unitech/pm2/)
-* [Swagger](https://github.com/swagger-api/)
+* [Swagger](https://github.com/SystangoTechnologies/swagger-generator-koa/blob/master/README.md)
 
 ## Structure
 ```
@@ -74,8 +74,22 @@ git clone https://github.com/SystangoTechnologies/Koach-SQL.git
 │   │         ├─ User   
 │   │         └─ index.js
 │   ├── models                      # Sequelize models
-│   │   ├── index.js                # Creates connection from database and load models
+│   │   ├── index.js                # Creates connection from database and load model
 │   │   └── user.js                 # User model
+    ├── requestModel
+|   |   ├── v1
+|   |   |  ├── auth.js
+|   |   |  └── users.js
+|   |   └── v2
+|   |       ├── auth.js
+|   |       └── users.js
+|   ├── responseModel
+|   |   ├── v1
+|   |   |  ├── auth.js
+|   |   |  └── users.js
+|   |   └── v2
+|   |       ├── auth.js
+|   |       └── users.js
 │   └── middleware                  # Custom middleware
 │       └── validators              # Validation middleware
 └── test                            # Unit tests

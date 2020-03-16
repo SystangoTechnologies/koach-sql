@@ -1,6 +1,6 @@
 {
   "name": "koach",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Production ready Koa2 boilerplate for APIs using sequelize",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,10 @@
     "passportjs",
     "apidoc"
   ],
-  "author": "Anurag Vikram Singh <anurag@systango.com>",
+  "author": {
+    "name": "systango-technologies",
+    "email": "engineering@systango.com"
+  },
   "license": "MIT",
   "apidoc": {
     "title": "koach",
